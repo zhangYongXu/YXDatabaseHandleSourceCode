@@ -1,0 +1,667 @@
+//
+//  YXDatabaseHandle.m
+//  Echo
+//
+//  Created by BZBY on 15/3/25.
+//  Copyright (c) 2015年 Static Ga. All rights reserved.
+//
+
+#import "YXDatabaseHandle.h"
+#import "ECUtils.h"
+#import "FMDatabase.h"
+#import "YXDatabaseHelper.h"
+#import "NSObject+property.h"
+#import "SqliteUtils.h"
+
+#define DB_NAME @"common_db.sqlite"
+
+static YXDatabaseHandle * shareIntance = nil;
+@interface YXDatabaseHandle()
+//数据库中表信息
+@property(strong, nonatomic) NSMutableDictionary * tablesDict;
+
+@property(strong, nonatomic) FMDatabase* database;
+@end
+@implementation YXDatabaseHandle
+-(instancetype)init{
+    if(self = [super init]){
+        
+    }
+    return self;
+}
+
++(YXDatabaseHandle *)shareInstance{
+    static dispatch_once_t predicate;
+    dispatch_once(&predicate, ^{
+        shareIntance = [[self alloc] init];
+    });
+    return shareIntance;
+}
+-(void)registerClass:(Class)aclass MappingTypeType:(TableFeildMappingType)mappingType{
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    if(tableInfo){
+        NSLog(@"类%@ 已经注册过",className);
+        return;
+    }
+    if(TableFeildMappingTypeMappingFile == mappingType){
+        NSString * mappingFileName = [NSString stringWithFormat:@"%@_table_mappingFile.plist",className];
+        tableInfo = [DbTableInfo modelWithMappingFileName:mappingFileName];
+        if(nil == tableInfo){
+            NSLog(@"类%@,映射文件不存在",className);
+            return;
+        }
+    }else{
+        tableInfo = [DbTableInfo modelWithClass:aclass];
+    }
+    
+    [self.tablesDict setObject:tableInfo forKey:className];
+    
+    if([self isTableExistFMDB:self.database TableName:tableInfo.tableName]){
+        [self alterTable:[self.database sqliteHandle] DbTableInfo:tableInfo];
+    }else{
+        [self createTableFMDB:self.database DbTableInfo:tableInfo];
+    }
+}
+-(void)registerClass:(Class)aclass MappingTypeType:(TableFeildMappingType)mappingType UniqueColumnNameArray:(NSArray*)uniqueColumnNameArray;{
+    
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    if(tableInfo){
+        NSLog(@"类%@ 已经注册过",className);
+        return;
+    }
+    if(TableFeildMappingTypeMappingFile == mappingType){
+        NSString * mappingFileName = [NSString stringWithFormat:@"%@_table_mappingFile.plist",className];
+        tableInfo = [DbTableInfo modelWithMappingFileName:mappingFileName];
+        if(nil == tableInfo){
+            NSLog(@"类%@,映射文件不存在",className);
+            return;
+        }
+    }else{
+        tableInfo = [DbTableInfo modelWithClass:aclass];
+    }
+    
+    for(TableColumnInfo * columnInfo in tableInfo.columnInfoArray){
+        for(NSString * columnName in uniqueColumnNameArray){
+            if([columnInfo.columnName isEqualToString:columnName]){
+                columnInfo.isUnique = YES;
+            }
+        }
+    }
+    
+    [self.tablesDict setObject:tableInfo forKey:className];
+    
+    if([self isTableExistFMDB:self.database TableName:tableInfo.tableName]){
+        [self alterTable:[self.database sqliteHandle] DbTableInfo:tableInfo];
+    }else{
+        [self createTableFMDB:self.database DbTableInfo:tableInfo];
+    }
+}
+-(void)openDatabase{
+    if(nil == self.tablesDict){
+        self.tablesDict = [[NSMutableDictionary alloc] init];
+    }
+    NSString * path = [self dataBaseFilePath];
+    self.database=[[FMDatabase alloc] initWithPath:path];
+    //打开数据库
+    if([self.database open]){
+        NSLog(@"打开数据库成功");
+    }else{
+        NSLog(@"打开数据库失败");
+    }
+}
+-(void)closeDatabase{
+    [self.database close];
+    self.database = nil;
+    self.tablesDict = nil;
+}
+#pragma mark 获取数据库文件存放路径
+-(NSString*) dataBaseFilePath
+{
+
+    NSString * dbPath = [ECUtils getHomeDatabaseByHomePath:APPDelegate.userHomePath andDbname:DB_NAME];
+    NSLog(@"dataBasePath==%@",dbPath);
+    return dbPath;
+    
+}
+#pragma mark 判断某个表是否存在
+-(BOOL)isTableExistFMDB:(FMDatabase*)db TableName:(NSString *) tableName{
+    FMResultSet *rs = [db executeQuery:@"select count(*) as 'count' from sqlite_master where type ='table' and name = ?", tableName];
+    while ([rs next]){
+        NSInteger count = [rs intForColumn:@"count"];
+        NSLog(@"isTableExist %d", count);
+        if (0 == count){
+            return NO;
+        }else{
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
+#pragma mark 创建表语句
+- (void)createTableFMDB:(FMDatabase*) db DbTableInfo:(DbTableInfo*)tableInfo
+{
+    NSString *sqlCreateTable = [tableInfo sqlCreateTable];
+    BOOL successs=[db executeUpdate:sqlCreateTable];
+    if(!successs){
+        NSLog(@"创建失败：%@",[self.database lastErrorMessage]);
+    }
+}
+
+#pragma mark 获取表已存在的列
+-(NSMutableArray*)getExistColumns:(sqlite3*) db DbTableInfo:(DbTableInfo*)table{
+    
+    NSMutableArray * array = [[NSMutableArray alloc] init];
+    NSString *sql = [NSString stringWithFormat:@"PRAGMA table_info(%@)", table.tableName];
+    sqlite3_stmt *statement = nil;
+    if (sqlite3_prepare_v2(db, [sql UTF8String], -1, &statement, NULL) != SQLITE_OK ) 	{
+        NSLog(@"Error: failed to prepare statement.");
+        return NO;
+    }
+    while (sqlite3_step(statement) == SQLITE_ROW) {
+        char * c_column = (char *)sqlite3_column_text(statement, 1);
+        BOOL isPrimaryKey = sqlite3_column_int(statement, 5);
+        if(!isPrimaryKey){
+            NSString *columnName = [NSString stringWithUTF8String:c_column];
+            [array addObject:columnName];
+        }
+    }
+    return array;
+}
+#pragma mark 获取表中还不存在的列
+- (NSMutableArray*)getUnExistColumns:(sqlite3*) db DbTableInfo:(DbTableInfo*)tableInfo{
+    NSMutableArray * array = [[NSMutableArray alloc] init];
+    NSArray * existColumnArray = [self getExistColumns:db DbTableInfo:tableInfo];
+    NSArray * columnArray = tableInfo.columnInfoArray;
+    if(existColumnArray.count == columnArray.count){
+        return nil;
+    }
+    for(TableColumnInfo * columnInfo in columnArray){
+        if(![existColumnArray containsObject:columnInfo.columnName]){
+            [array addObject:columnInfo];
+        }
+    }
+    return array;
+}
+#pragma mark 添加列
+- (void)addColumn:(sqlite3*) db DbTableInfo:(DbTableInfo*)tableInfo ColumnArray:(NSArray*)columnArray{
+    for(TableColumnInfo * columnInfo in columnArray){
+        
+        NSString * defaultValue = @"";
+        if(columnInfo.defaultValue){
+            defaultValue = [NSString stringWithFormat:@"DEFAULT '%@'",columnInfo.defaultValue];
+        }
+        NSString * sql = [NSString stringWithFormat:@"ALTER TABLE %@ ADD COLUMN %@ %@  %@",tableInfo.tableName,columnInfo.columnName,columnInfo.columnType,defaultValue];
+        if(![SqliteUtils executeSql:db Sql:sql]){
+            NSLog(@"  alter table  Sql: %@  ",sql);
+        }
+    }
+}
+#pragma mark 修改表
+- (void)alterTable:(sqlite3*) db DbTableInfo:(DbTableInfo*)tableInfo{
+    NSMutableArray * array = [self getUnExistColumns:db DbTableInfo:tableInfo];
+    NSLog(@"不存在的列 array = %@",array);
+    [self addColumn:db DbTableInfo:tableInfo ColumnArray:array];
+}
+/*增，删，改，查*/
+#pragma 插入数据
+#pragma mark 插入实体
+-(void)insertModel:(id)model{
+    if(![self.database open]){
+        [self openDatabase];
+    }
+    NSString * sql=[self createSqlInsertModel:model];
+    if(!sql){
+        return;
+    }
+    BOOL success=[self.database executeUpdate:sql];
+    if(!success){
+        NSLog(@"插入数据失败：%@",[self.database lastErrorMessage]);
+    }else{
+        NSLog(@"插入成功");
+    }
+}
+-(void)insertModelArray:(NSArray*)modelArray{
+    [self.database beginTransaction];
+    for(id model in modelArray){
+        [self insertModel:model];
+    }
+    [self.database commit];
+}
+#pragma mark 批量处理
+-(void)batchHandle:(void (^)(void))block{
+    [_database beginTransaction];
+    block();
+    [_database commit];
+}
+#pragma mark 创建插入语句
+-(NSString*)createSqlInsertModel:(id)model{
+    NSString * className = NSStringFromClass([model class]);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    if(!tableInfo){
+        NSLog(@"模型 %@ 还没有注册表信息",className);
+        return nil;
+    }
+    NSString * sql;
+    NSString * colStr=@"";
+    NSString * valStr=@"";
+    for(TableColumnInfo * columnInfo in tableInfo.columnInfoArray){
+        NSString * columnName = columnInfo.columnName;
+        NSString * value = [model valueForKey:columnInfo.propertyName];
+        if(!value){
+            NSLog(@"表 %@ 列 %@ 对应模型属性名不争确",tableInfo.tableName,columnInfo.propertyName);
+        }
+        colStr=[colStr stringByAppendingString:[NSString stringWithFormat:@",%@",columnName]];
+        if([value isKindOfClass:[NSString class]]){
+            value=[value stringByReplacingOccurrencesOfString:@"'" withString:@""];
+            value=[value stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+        }
+        valStr=[valStr stringByAppendingString:[NSString stringWithFormat:@",'%@'",value]];
+    }
+    
+    if(colStr.length>0){
+        colStr=[colStr substringFromIndex:1];
+    }
+    if(valStr.length>0){
+        valStr=[valStr substringFromIndex:1];
+    }
+    
+    sql = [NSString stringWithFormat:@"insert into %@ (%@) values(%@)",tableInfo.tableName,colStr,valStr];
+    //NSLog(@"insertinto sql=%@",sql);
+    NSLog(@"---------------------------------------------------------------");
+    return sql;
+}
+#pragma mark 读取数据
+-(void)setValuesWithResultDict:(NSDictionary*)dict Model:(id)model TableInfo:(DbTableInfo*)tableInfo{
+    for(NSString * columnName in dict.allKeys){
+        NSString * value = [dict objectForKey:columnName];
+        TableColumnInfo * columnInfo = [tableInfo columnInfoWithColumnName:columnName];
+        if(!columnInfo){
+            if(![columnName isEqualToString:@"serial"]){
+                NSLog(@"表 %@ 列 %@ 模型属性映射不完整",tableInfo.tableName,columnName);
+            }
+            continue;
+        }
+        [model setValue:value forKey:columnInfo.propertyName];
+    }
+}
+#pragma mark 读取某个模型的所有记录
+-(NSArray *)readArray:(Class)aclass{
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * sql=[NSString stringWithFormat:@"select * from %@",tableInfo.tableName];
+    FMResultSet * rs=[_database executeQuery:sql];
+    NSMutableArray * resultArray=[NSMutableArray new];
+    while (rs.next) {
+        id model=[aclass new];
+        NSDictionary * dict=[rs resultDictionary];
+        [self setValuesWithResultDict:dict Model:model TableInfo:tableInfo];
+        [resultArray addObject:model];
+    }
+    return resultArray;
+}
+
+#pragma mark 分页读取某个模型的数据
+-(NSArray *)readArrayClass:(Class)aclass Page:(NSInteger)page pageSize:(NSInteger)size{
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * sql=[NSString stringWithFormat:@"select * from %@ limit %d,%d",tableInfo.tableName,(page-1)*size,size];
+    FMResultSet * rs=[_database executeQuery:sql];
+    NSMutableArray * resultArray=[NSMutableArray new];
+    while (rs.next) {
+        id model=[aclass new];
+        NSDictionary * dict=[rs resultDictionary];
+//        [model setPartAttributes:dict];
+        [self setValuesWithResultDict:dict Model:model TableInfo:tableInfo];
+        [resultArray addObject:model];
+    }
+    return resultArray;
+}
+#pragma mark 按条件分页读取某个模型的数据
+-(NSArray *)readArrayClass:(Class)aclass Page:(NSInteger)page pageSize:(NSInteger)size where:(NSDictionary *)whereDict{
+    NSString * where = @"";
+    NSArray * array=whereDict.allKeys;
+    for(int i=0;i<whereDict.count;i++){
+        NSString * key=array[i];
+        NSString * value=[whereDict objectForKey:key];
+        if(i==whereDict.count-1){
+            where=[where stringByAppendingString:[NSString stringWithFormat:@" %@ ",value]];
+        }else{
+            where=[where stringByAppendingString:[NSString stringWithFormat:@" %@ and ",value]];
+        }
+    }
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * sql=[NSString stringWithFormat:@"select * from %@ where %@ limit %ld,%ld",tableInfo.tableName,where,(page-1)*size,size];
+    FMResultSet * rs=[_database executeQuery:sql];
+    NSMutableArray * resultArray=[NSMutableArray new];
+    while (rs.next) {
+        id model=[aclass new];
+        NSDictionary * dict=[rs resultDictionary];
+        //[model setPartAttributes:dict];
+        [self setValuesWithResultDict:dict Model:model TableInfo:tableInfo];
+        [resultArray addObject:model];
+    }
+    return resultArray;
+}
+-(NSArray *)readArray:(Class)aclass OrderBy:(NSString *)orderBy OrderType:(OrderType)orderType{
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * type = @"desc";
+    if(orderType == OrderTypeAsc){
+        type = @"asc";
+    }
+    NSString * sql=[NSString stringWithFormat:@"select * from %@ order by %@ %@",tableInfo.tableName,orderBy,type];
+    FMResultSet * rs=[_database executeQuery:sql];
+    NSMutableArray * resultArray=[NSMutableArray new];
+    while (rs.next) {
+        id model=[aclass new];
+        NSDictionary * dict=[rs resultDictionary];
+        [self setValuesWithResultDict:dict Model:model TableInfo:tableInfo];
+        [resultArray addObject:model];
+    }
+    return resultArray;
+}
+-(NSArray *)readArray:(Class)aclass OrderBy:(NSString *)orderBy OrderType:(OrderType)orderType where:(NSDictionary *)whereDict{
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * type = @"desc";
+    if(orderType == OrderTypeAsc){
+        type = @"asc";
+    }
+    
+    NSString * where = @"";
+    NSArray * array=whereDict.allKeys;
+    for(int i=0;i<whereDict.count;i++){
+        NSString * key=array[i];
+        NSString * value=[whereDict objectForKey:key];
+        if(i==whereDict.count-1){
+            where=[where stringByAppendingString:[NSString stringWithFormat:@" %@ ",value]];
+        }else{
+            where=[where stringByAppendingString:[NSString stringWithFormat:@" %@ and ",value]];
+        }
+    }
+    
+    NSString * sql=[NSString stringWithFormat:@"select * from %@  where (%@) order by %@ %@",tableInfo.tableName,where,orderBy,type];
+    FMResultSet * rs=[_database executeQuery:sql];
+    NSMutableArray * resultArray=[NSMutableArray new];
+    while (rs.next) {
+        id model=[aclass new];
+        NSDictionary * dict=[rs resultDictionary];
+        [self setValuesWithResultDict:dict Model:model TableInfo:tableInfo];
+        [resultArray addObject:model];
+    }
+    return resultArray;
+}
+-(NSArray *)readArrayBySql:(NSString *)sql{
+    FMResultSet * rs=[_database executeQuery:sql];
+    NSMutableArray * resultArray=[NSMutableArray new];
+    while (rs.next) {
+        NSDictionary * dict=[rs resultDictionary];
+        [resultArray addObject:dict];
+    }
+    return resultArray;
+}
+#pragma mark 根据条件读取某个模型的数据
+-(NSArray*)readyArray:(Class)aclass where:(NSDictionary *)whereDict{
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * sql=[NSString stringWithFormat:@"select * from %@ where ",tableInfo.tableName];
+    NSArray * array=whereDict.allKeys;
+    for(int i=0;i<whereDict.count;i++){
+        NSString * key=array[i];
+        NSString * value=[whereDict objectForKey:key];
+        if(i==whereDict.count-1){
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ ",value]];
+        }else{
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ and ",value]];
+        }
+    }
+    FMResultSet * rs=[_database executeQuery:sql];
+    NSMutableArray * resultArray=[NSMutableArray new];
+    while (rs.next) {
+        id model=[aclass new];
+        NSDictionary * dict=[rs resultDictionary];
+        //[model setPartAttributes:dict];
+        [self setValuesWithResultDict:dict Model:model TableInfo:tableInfo];
+        [resultArray addObject:model];
+    }
+    return resultArray;
+}
+#pragma mark 查询数据数量
+-(NSInteger)countClass:(Class)aclass{
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * sql=[NSString stringWithFormat:@"select count(*) from %@",tableInfo.tableName];
+    FMResultSet * rs=[_database executeQuery:sql];
+    NSInteger count = 0;
+    while (rs.next) {
+        count = [rs intForColumnIndex:0];
+        break;
+    }
+    return count;
+}
+#pragma mark 根据条件查询数据数量
+-(NSInteger)countClass:(Class)aclass where:(NSDictionary *)whereDict{
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * sql=[NSString stringWithFormat:@"select count(*) from %@ where ",tableInfo.tableName];
+    NSArray * array=whereDict.allKeys;
+    for(int i=0;i<whereDict.count;i++){
+        NSString * key=array[i];
+        NSString * value=[whereDict objectForKey:key];
+        if(i==whereDict.count-1){
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ ",value]];
+        }else{
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ and ",value]];
+        }
+    }
+    FMResultSet * rs=[_database executeQuery:sql];
+    NSInteger count = 0;
+    while (rs.next) {
+        count = [rs intForColumnIndex:0];
+        break;
+    }
+    return count;
+}
+#pragma mark 删除
+#pragma mark 删除模型
+-(void)deleteModel:(id)model{
+    NSString *sql=[NSString stringWithFormat:@"delete from %@ where ",NSStringFromClass([model class])];
+    NSString * className = NSStringFromClass([model class]);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSArray * array = tableInfo.columnInfoArray;
+    for(int i=0;i<array.count;i++){
+        TableColumnInfo * columnInfo = array[i];
+        NSString * columnName = columnInfo.columnName;
+        NSString * key = columnInfo.propertyName;
+        NSString * value=[model valueForKey:key];
+        if(i==array.count-1){
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ = '%@' ",columnName,value]];
+        }else{
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ = '%@'and ",columnName,value]];
+        }
+    }
+    BOOL success = [self.database executeUpdate:sql];
+    if(!success){
+        NSLog(@"删除失败");
+    }else{
+        NSLog(@"删除成功");
+    }
+}
+#pragma mark 根据唯一标示符删除数据
+-(void)deleteModel:(id)model primarykeyName:(NSString *)primarykeyName{
+    NSString * className = NSStringFromClass([model class]);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * sql=[NSString stringWithFormat:@"delete from %@  ",tableInfo.tableName];
+    //设置条件
+    NSString * where = [NSString stringWithFormat:@" where %@ ='%@'",primarykeyName,[model valueForKey:primarykeyName]];
+    sql=[sql stringByAppendingString:where];
+    BOOL sucess=[_database executeUpdate:sql];
+    if(!sucess){
+        NSLog(@"删除失败");
+    }else{
+        NSLog(@"删除成功");
+    }
+}
+#pragma mark 根据条件删除
+-(void)deleteClass:(Class)aclass where:(NSDictionary *)whereDict{
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * sql = [NSString stringWithFormat:@"delete from %@ where ",tableInfo.tableName];
+    NSArray * array=whereDict.allKeys;
+    for(int i=0;i<whereDict.count;i++){
+        NSString * key=array[i];
+        NSString * value=[whereDict objectForKey:key];
+        if(i==whereDict.count-1){
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ ",value]];
+        }else{
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ and ",value]];
+        }
+    }
+    if(!whereDict){
+        sql = [NSString stringWithFormat:@"delete from %@ ",tableInfo.tableName];
+    }
+    BOOL success = [_database executeUpdate:sql];
+    if(!success){
+        NSLog(@"删除失败");
+    }else{
+        NSLog(@"删除成功");
+    }
+}
+#pragma mark 更新
+#pragma mark 根据条件更新
+-(void)updateModel:(id)model where:(NSDictionary *)whereDict{
+    NSString * className = NSStringFromClass([model class]);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * sql=[NSString stringWithFormat:@"update %@  ",tableInfo.tableName];
+    //修改语句
+    NSArray * array = tableInfo.columnInfoArray;
+    for(int i=0;i<array.count;i++){
+        TableColumnInfo * columnInfo = array[i];
+        NSString * columnName = columnInfo.columnName;
+        NSString * key = columnInfo.propertyName;
+        NSString * value = [model valueForKey:key];
+        if([value isKindOfClass:[NSString class]]){
+            value=[value stringByReplacingOccurrencesOfString:@"'" withString:@""];
+            value=[value stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+        }
+        if(i==array.count-1){
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ = '%@' ",columnName,value]];
+        }else{
+            if(i==0){
+                sql=[sql stringByAppendingString:[NSString stringWithFormat:@"set %@ = '%@', ",columnName,value]];
+            }else{
+                sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ = '%@', ",columnName,value]];
+            }
+        }
+    }
+    //设置条件
+    sql =[sql stringByAppendingString:@" where "];
+    NSArray * arrayW=whereDict.allKeys;
+    for(int i=0;i<arrayW.count;i++){
+        NSString * key=arrayW[i];
+        NSString * value=[whereDict objectForKey:key];
+        if(i==whereDict.count-1){
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ ",value]];
+        }else{
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ and ",value]];
+        }
+    }
+    BOOL sucess=[_database executeUpdate:sql];
+    if(!sucess){
+        NSLog(@"更新失败");
+    }else{
+        NSLog(@"更新成功");
+    }
+    //NSLog(@"lskdfaskdfj=  sql=%@",sql);
+    
+}
+-(void)updateModel:(id)model primarykeyName:(NSString *)primarykeyName{
+    NSString * className = NSStringFromClass([model class]);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString * sql = [NSString stringWithFormat:@"update %@  ",tableInfo.tableName];
+    //修改语句
+    NSArray * array = tableInfo.columnInfoArray;
+    for(int i=0;i<array.count;i++){
+        TableColumnInfo * columnInfo = array[i];
+        NSString * columnName = columnInfo.columnName;
+        NSString * key = columnInfo.propertyName;
+        NSString * value=[model valueForKey:key];
+        if([value isKindOfClass:[NSString class]]){
+            value=[value stringByReplacingOccurrencesOfString:@"'" withString:@""];
+            value=[value stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+        }
+        if(i==array.count-1){
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ = '%@' ",columnName,value]];
+        }else{
+            if(i==0){
+                sql=[sql stringByAppendingString:[NSString stringWithFormat:@"set %@ = '%@', ",columnName,value]];
+            }else{
+                sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ = '%@', ",columnName,value]];
+            }
+        }
+    }
+    //设置条件
+    NSString * where = [NSString stringWithFormat:@" where %@ ='%@'",primarykeyName,[model valueForKey:primarykeyName]];
+    sql=[sql stringByAppendingString:where];
+    BOOL sucess=[_database executeUpdate:sql];
+    if(!sucess){
+        NSLog(@"更新失败");
+    }else{
+        NSLog(@"更新成功");
+    }
+    
+}
+#pragma mark 存在性判断
+#pragma mark 判断某种实体 是否存在该记录
+-(BOOL)isExistModelClass:(Class)aclass primarykeyName:(NSString *)primarykeyName primarkeyValue:(NSString *)primaryKeyValue{
+    NSString * className = NSStringFromClass(aclass);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString *sql=[NSString stringWithFormat:@"select * from %@ where %@=?",tableInfo.tableName,primarykeyName];
+    FMResultSet * rs=[_database executeQuery:sql,primaryKeyValue];
+    while (rs.next) {
+        return YES;
+    }
+    return NO;
+}
+-(BOOL)isExistModel:(id)model primarykeyName:(NSString *)primarykeyName{
+    NSString * className = NSStringFromClass([model class]);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString *sql=[NSString stringWithFormat:@"select * from %@ where %@=?",tableInfo.tableName,primarykeyName];
+    NSString * value=[model valueForKey:primarykeyName];
+    FMResultSet * rs=[_database executeQuery:sql,value];
+    while (rs.next) {
+        return YES;
+    }
+    return NO;
+}
+
+-(BOOL)isExistModel:(id)model{
+    NSString * className = NSStringFromClass([model class]);
+    DbTableInfo * tableInfo = [self.tablesDict objectForKey:className];
+    NSString *sql = [NSString stringWithFormat:@"select * from %@ where ",tableInfo.tableName];
+
+    NSArray * array = tableInfo.columnInfoArray;
+    for(int i=0;i<array.count;i++){
+        TableColumnInfo * columnInfo = array[i];
+        NSString * columnName = columnInfo.columnName;
+        NSString * key = columnInfo.propertyName;
+        NSString * value=[model valueForKey:key];
+        if(i==array.count-1){
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ = '%@' ",columnName,value]];
+        }else{
+            sql=[sql stringByAppendingString:[NSString stringWithFormat:@" %@ = '%@'and ",columnName,value]];
+        }
+    }
+    NSLog(@"isex  sql=%@",sql);
+    FMResultSet * rs=[_database executeQuery:sql];
+    while (rs.next) {
+        return YES;
+    }
+    return NO;
+}
+@end

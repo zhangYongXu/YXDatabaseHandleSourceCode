@@ -1,0 +1,116 @@
+//
+//  NSObject+property.m
+//  Echo
+//
+//  Created by BZBY on 15/3/26.
+//  Copyright (c) 2015年 Static Ga. All rights reserved.
+//
+
+#import "NSObject+property.h"
+#import <objc/runtime.h>
+@implementation NSObject (property)
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    NSLog(@"%@,forUndefinedKey....... %@ ",NSStringFromClass([self class]),key);
+}
+-(id)valueForUndefinedKey:(NSString *)key{
+    NSLog(@"%@,valueForUndefinedKey....... %@ ",NSStringFromClass([self class]),key);
+    return nil;
+}
+
+#pragma mark 获取模型的属性列表
+//获得当前对象的所有属性列表，包括父类的属性 depth；父类深度
+/**
+ *  获得当前对象的所有属性列表，包括父类的属性 depth；父类深度
+ *
+ *  @param isIncludeValue 是否包含属性对应的值
+ *  @param depth          父类层级深度
+ *
+ *  @return 属性列表
+ */
+-(NSDictionary *)propertyList:(BOOL)isIncludeValue depth:(NSInteger)depth
+{
+    NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    
+    [self propertyList:isIncludeValue object:[self class] depth:depth dict:props];
+    
+    NSLog(@"%@",props);
+    return props;
+    
+}
+//获得当前对象的所有属性列表，如果isWrite为YES，返回的字典中同时包含了属性值，否则属性值为空
+- (void)propertyList:(BOOL)isIncludeValue object:(Class)class depth:(NSInteger)depth  dict:(NSMutableDictionary*)dict
+{
+    //NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    unsigned int outCount, i;
+    //获得某个类的所有属性的拷贝
+    objc_property_t *properties = class_copyPropertyList(class, &outCount);
+    for (i = 0; i<outCount; i++) {
+        //获得某一个属性
+        objc_property_t property = properties[i];
+        
+        //获得属性名的字符串
+        NSString *propertyName = [[NSString alloc] initWithCString:property_getName(property) encoding:NSUTF8StringEncoding] ;
+        
+        //获得指定的属性的值
+        id propertyValue = [self valueForKey:(NSString *)propertyName];
+        if (isIncludeValue) {
+            if (propertyValue)
+            {
+                //保存属性名和属值值到字典中
+                [dict setObject:propertyValue forKey:propertyName];
+            }
+        }
+        else{
+            //保存空对象到字典中,为了获得所有属性名的列表
+            [dict setObject:[NSNull null] forKey:propertyName];
+        }
+    }
+    //释放拷贝的属性列表
+    free(properties);
+    NSLog(@"%@",dict);
+    if (depth>0&& [class superclass]!=[NSObject class]) {
+        [self propertyList:isIncludeValue object:[class superclass] depth:depth-1 dict:dict];
+    }
+}
+//获得当前对象的所有属性列表，如果isWrite为YES，返回的字典中同时包含了属性值，否则属性值为空
+/**
+ *  获取属性列表
+ *
+ *  @param isIncludeValue 是否包含属性对应的值
+ *
+ *  @return 属性列表字典
+ */
+- (NSDictionary *)propertyList:(BOOL)isIncludeValue
+{
+    NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    unsigned int outCount, i;
+    //获得某个类的所有属性的拷贝
+    objc_property_t *properties = class_copyPropertyList([self class], &outCount);
+    for (i = 0; i<outCount; i++) {
+        //获得某一个属性
+        objc_property_t property = properties[i];
+        
+        //获得属性名的字符串
+        NSString *propertyName = [[NSString alloc] initWithCString:property_getName(property) encoding:NSUTF8StringEncoding] ;
+        
+        //获得指定的属性的值
+        id propertyValue = [self valueForKey:(NSString *)propertyName];
+        if (isIncludeValue) {
+            if (propertyValue)
+            {
+                //保存属性名和属值值到字典中
+                [props setObject:propertyValue forKey:propertyName];
+            }
+        }
+        else{
+            //保存空对象到字典中,为了获得所有属性名的列表
+            [props setObject:[NSNull null] forKey:propertyName];
+        }
+    }
+    //释放拷贝的属性列表
+    free(properties);
+    //返回所需要的当前实例的属性字典（如果对象被赋值了，同时返回对象的值）
+    return props;
+}
+
+@end

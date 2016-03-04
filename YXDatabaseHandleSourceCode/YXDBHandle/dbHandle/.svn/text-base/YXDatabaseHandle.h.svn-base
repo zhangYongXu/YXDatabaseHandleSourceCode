@@ -1,0 +1,79 @@
+//
+//  YXDatabaseHandle.h
+//  Echo
+//
+//  Created by BZBY on 15/3/25.
+//  Copyright (c) 2015年 Static Ga. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+@class DbTableInfo;
+/*
+    映射文件名：模型名_table_mappingFile.plist
+ */
+typedef NS_ENUM(NSInteger, TableFeildMappingType) {
+    TableFeildMappingTypeClassProperty = 0,//按照模型名和属性名与数据表名和字段名一一对应方式管理数据
+    TableFeildMappingTypeMappingFile = 1 //更具模型与数据库映射文件管理数据
+};
+typedef NS_ENUM(NSInteger,OrderType) {
+    OrderTypeDesc = 0,
+    OrderTypeAsc = 1
+};
+@interface YXDatabaseHandle : NSObject
+//申明类方法，获得数据库操作类单例对象
++(YXDatabaseHandle*)shareInstance;
+
+-(void)registerClass:(Class)aclass MappingTypeType:(TableFeildMappingType)mappingType;
+-(void)registerClass:(Class)aclass MappingTypeType:(TableFeildMappingType)mappingType UniqueColumnNameArray:(NSArray*)uniqueColumnNameArray;
+-(void)openDatabase;
+-(void)closeDatabase;
+#pragma mark 增删改查 
+//插入单条数据
+-(void)insertModel:(id)model;
+//插入数据数组
+-(void)insertModelArray:(NSArray*)modelArray;
+//批量处理
+-(void)batchHandle:(void(^)(void))block;
+
+
+//查询某个模型数据的条数
+-(NSInteger)countClass:(Class)aclass;
+//根据条件查询模型数据条数
+-(NSInteger)countClass:(Class)aclass where:(NSDictionary*)whereDict;
+
+
+//读取某个模型的所有数据
+-(NSArray*)readArray:(Class)aclass;
+//根据条件读取某个模型的所有数据(字典里存条件如{key:条件名(如 where2) value:条件（如 name like '%lisi%'）)}
+-(NSArray*)readyArray:(Class)aclass where:(NSDictionary*)whereDict;
+//分页读取某个模型的数据
+-(NSArray*)readArrayClass:(Class)aclass Page:(NSInteger)page pageSize:(NSInteger)size;
+//按条件分页读取某个模型的数据
+-(NSArray*)readArrayClass:(Class)aclass Page:(NSInteger)page pageSize:(NSInteger)size where:(NSDictionary*)whereDict;
+//读取某个模型的数据 并排序
+-(NSArray*)readArray:(Class)aclass OrderBy:(NSString*)orderBy OrderType:(OrderType)orderType;
+//按条件读取某个模型的数据 并排序
+-(NSArray*)readArray:(Class)aclass OrderBy:(NSString*)orderBy OrderType:(OrderType)orderType where:(NSDictionary*)whereDict;
+//根据sql读数据
+-(NSArray*)readArrayBySql:(NSString*)sql;
+
+//根据唯一标示符更新某个实体
+-(void)updateModel:(id)model primarykeyName:(NSString*)primarykeyName;
+//根据条件更新某个模型的数据(字典里存条件如（key:条件名(where1) value:条件（如name like '%lisi%'）))
+-(void)updateModel:(id)model where:(NSDictionary*)whereDict;
+
+
+// 删除模型
+-(void)deleteModel:(id)model;
+//根据唯一标示符删除某一个模型实体记录
+-(void)deleteModel:(id)model primarykeyName:(NSString*)primarykeyName;;
+//根据条件删除某个模型的所有数据(字典里存条件如{key:条件名(如 where2) value:条件（如 name like '%lisi%'）)}
+-(void)deleteClass:(Class)aclass where:(NSDictionary*)whereDict;
+
+//模型实体是否在数据库中已存在
+-(BOOL)isExistModelClass:(Class)aclass primarykeyName:(NSString*)primarykeyName primarkeyValue:(NSString*)primaryKeyValue;
+//模型实体是否在数据库中已存在
+-(BOOL)isExistModel:(id)model primarykeyName:(NSString*)primarykeyName;
+//模型实体是否在数据库中已存在
+-(BOOL)isExistModel:(id)model;
+@end

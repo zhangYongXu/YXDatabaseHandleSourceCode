@@ -1,0 +1,14 @@
+//
+//  NSObject+property.h
+//  Echo
+//
+//  Created by BZBY on 15/3/26.
+//  Copyright (c) 2015年 Static Ga. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@interface NSObject (property)
+- (NSDictionary *)propertyList:(BOOL)isIncludeValue;
+- (NSDictionary *)propertyList:(BOOL)isIncludeValue depth:(NSInteger)depth;
+@end

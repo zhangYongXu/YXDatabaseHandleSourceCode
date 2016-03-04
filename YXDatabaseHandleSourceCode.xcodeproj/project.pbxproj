@@ -8,13 +8,39 @@
 
 /* Begin PBXBuildFile section */
 		CA5F3C5E1C896C3E0039D244 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3C5D1C896C3E0039D244 /* main.m */; };
-		CA5F3C611C896C3E0039D244 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3C601C896C3E0039D244 /* AppDelegate.m */; };
-		CA5F3C641C896C3E0039D244 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3C631C896C3E0039D244 /* ViewController.m */; };
-		CA5F3C671C896C3E0039D244 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CA5F3C651C896C3E0039D244 /* Main.storyboard */; };
 		CA5F3C691C896C3E0039D244 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA5F3C681C896C3E0039D244 /* Assets.xcassets */; };
 		CA5F3C6C1C896C3E0039D244 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CA5F3C6A1C896C3E0039D244 /* LaunchScreen.storyboard */; };
 		CA5F3C771C896C3E0039D244 /* YXDatabaseHandleSourceCodeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3C761C896C3E0039D244 /* YXDatabaseHandleSourceCodeTests.m */; };
 		CA5F3C821C896C3E0039D244 /* YXDatabaseHandleSourceCodeUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3C811C896C3E0039D244 /* YXDatabaseHandleSourceCodeUITests.m */; };
+		CA5F3C941C896CCF0039D244 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3C901C896CCF0039D244 /* AppDelegate.m */; };
+		CA5F3C951C896CCF0039D244 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3C921C896CCF0039D244 /* ViewController.m */; };
+		CA5F3C961C896CCF0039D244 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CA5F3C931C896CCF0039D244 /* Main.storyboard */; };
+		CA5F3CD11C896CE60039D244 /* CompanyModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3C991C896CE60039D244 /* CompanyModel.m */; };
+		CA5F3CD21C896CE60039D244 /* EmployeeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3C9B1C896CE60039D244 /* EmployeeModel.m */; };
+		CA5F3CD31C896CE60039D244 /* EmployeeModel_table_mappingFile.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA5F3C9C1C896CE60039D244 /* EmployeeModel_table_mappingFile.plist */; };
+		CA5F3CD41C896CE60039D244 /* UserModel.json in Resources */ = {isa = PBXBuildFile; fileRef = CA5F3C9F1C896CE60039D244 /* UserModel.json */; };
+		CA5F3CD51C896CE60039D244 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CA01C896CE60039D244 /* UserModel.m */; };
+		CA5F3CD61C896CE60039D244 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CA5F3CA21C896CE60039D244 /* SVProgressHUD.bundle */; };
+		CA5F3CD71C896CE60039D244 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CA41C896CE60039D244 /* SVProgressHUD.m */; };
+		CA5F3CD81C896CE60039D244 /* NSString+YXStringEX.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CA81C896CE60039D244 /* NSString+YXStringEX.m */; };
+		CA5F3CD91C896CE60039D244 /* YXDatabaseHandle+Delete.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CAC1C896CE60039D244 /* YXDatabaseHandle+Delete.m */; };
+		CA5F3CDA1C896CE60039D244 /* YXDatabaseHandle+Insert.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CAE1C896CE60039D244 /* YXDatabaseHandle+Insert.m */; };
+		CA5F3CDB1C896CE60039D244 /* YXDatabaseHandle+Select.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CB01C896CE60039D244 /* YXDatabaseHandle+Select.m */; };
+		CA5F3CDC1C896CE60039D244 /* YXDatabaseHandle+Update.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CB21C896CE60039D244 /* YXDatabaseHandle+Update.m */; };
+		CA5F3CDD1C896CE60039D244 /* YXDatabaseHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CB41C896CE60039D244 /* YXDatabaseHandle.m */; };
+		CA5F3CDE1C896CE60039D244 /* YXDBHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CB61C896CE60039D244 /* YXDBHelper.m */; };
+		CA5F3CDF1C896CE60039D244 /* YXTableColumnInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CB81C896CE60039D244 /* YXTableColumnInfo.m */; };
+		CA5F3CE01C896CE60039D244 /* YXTableInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CBA1C896CE60039D244 /* YXTableInfo.m */; };
+		CA5F3CE11C896CE60039D244 /* YXFileDirTool.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CBE1C896CE60039D244 /* YXFileDirTool.m */; };
+		CA5F3CE21C896CE60039D244 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CC11C896CE60039D244 /* FMDatabase.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		CA5F3CE31C896CE60039D244 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CC31C896CE60039D244 /* FMDatabaseAdditions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		CA5F3CE41C896CE60039D244 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CC51C896CE60039D244 /* FMDatabasePool.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		CA5F3CE51C896CE60039D244 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CC71C896CE60039D244 /* FMDatabaseQueue.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		CA5F3CE61C896CE60039D244 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CC91C896CE60039D244 /* FMResultSet.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		CA5F3CE71C896CE60039D244 /* YXLogsModel_table_mappingFile.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA5F3CCB1C896CE60039D244 /* YXLogsModel_table_mappingFile.plist */; };
+		CA5F3CE81C896CE60039D244 /* YXRootModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5F3CCE1C896CE60039D244 /* YXRootModel.m */; };
+		CA5F3CE91C896CE60039D244 /* YXReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = CA5F3CD01C896CE60039D244 /* YXReadMe.txt */; };
+		CA5F3CEB1C896D1A0039D244 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CA5F3CEA1C896D1A0039D244 /* libsqlite3.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,11 +63,6 @@
 /* Begin PBXFileReference section */
 		CA5F3C591C896C3E0039D244 /* YXDatabaseHandleSourceCode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YXDatabaseHandleSourceCode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA5F3C5D1C896C3E0039D244 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		CA5F3C5F1C896C3E0039D244 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		CA5F3C601C896C3E0039D244 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		CA5F3C621C896C3E0039D244 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		CA5F3C631C896C3E0039D244 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		CA5F3C661C896C3E0039D244 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CA5F3C681C896C3E0039D244 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CA5F3C6B1C896C3E0039D244 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CA5F3C6D1C896C3E0039D244 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -51,6 +72,58 @@
 		CA5F3C7D1C896C3E0039D244 /* YXDatabaseHandleSourceCodeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YXDatabaseHandleSourceCodeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA5F3C811C896C3E0039D244 /* YXDatabaseHandleSourceCodeUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YXDatabaseHandleSourceCodeUITests.m; sourceTree = "<group>"; };
 		CA5F3C831C896C3E0039D244 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CA5F3C8F1C896CCF0039D244 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		CA5F3C901C896CCF0039D244 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		CA5F3C911C896CCF0039D244 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		CA5F3C921C896CCF0039D244 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		CA5F3C931C896CCF0039D244 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		CA5F3C981C896CE60039D244 /* CompanyModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompanyModel.h; sourceTree = "<group>"; };
+		CA5F3C991C896CE60039D244 /* CompanyModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompanyModel.m; sourceTree = "<group>"; };
+		CA5F3C9A1C896CE60039D244 /* EmployeeModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmployeeModel.h; sourceTree = "<group>"; };
+		CA5F3C9B1C896CE60039D244 /* EmployeeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmployeeModel.m; sourceTree = "<group>"; };
+		CA5F3C9C1C896CE60039D244 /* EmployeeModel_table_mappingFile.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EmployeeModel_table_mappingFile.plist; sourceTree = "<group>"; };
+		CA5F3C9E1C896CE60039D244 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
+		CA5F3C9F1C896CE60039D244 /* UserModel.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = UserModel.json; sourceTree = "<group>"; };
+		CA5F3CA01C896CE60039D244 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
+		CA5F3CA21C896CE60039D244 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
+		CA5F3CA31C896CE60039D244 /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
+		CA5F3CA41C896CE60039D244 /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
+		CA5F3CA71C896CE60039D244 /* NSString+YXStringEX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+YXStringEX.h"; sourceTree = "<group>"; };
+		CA5F3CA81C896CE60039D244 /* NSString+YXStringEX.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+YXStringEX.m"; sourceTree = "<group>"; };
+		CA5F3CAB1C896CE60039D244 /* YXDatabaseHandle+Delete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "YXDatabaseHandle+Delete.h"; sourceTree = "<group>"; };
+		CA5F3CAC1C896CE60039D244 /* YXDatabaseHandle+Delete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "YXDatabaseHandle+Delete.m"; sourceTree = "<group>"; };
+		CA5F3CAD1C896CE60039D244 /* YXDatabaseHandle+Insert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "YXDatabaseHandle+Insert.h"; sourceTree = "<group>"; };
+		CA5F3CAE1C896CE60039D244 /* YXDatabaseHandle+Insert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "YXDatabaseHandle+Insert.m"; sourceTree = "<group>"; };
+		CA5F3CAF1C896CE60039D244 /* YXDatabaseHandle+Select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "YXDatabaseHandle+Select.h"; sourceTree = "<group>"; };
+		CA5F3CB01C896CE60039D244 /* YXDatabaseHandle+Select.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "YXDatabaseHandle+Select.m"; sourceTree = "<group>"; };
+		CA5F3CB11C896CE60039D244 /* YXDatabaseHandle+Update.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "YXDatabaseHandle+Update.h"; sourceTree = "<group>"; };
+		CA5F3CB21C896CE60039D244 /* YXDatabaseHandle+Update.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "YXDatabaseHandle+Update.m"; sourceTree = "<group>"; };
+		CA5F3CB31C896CE60039D244 /* YXDatabaseHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXDatabaseHandle.h; sourceTree = "<group>"; };
+		CA5F3CB41C896CE60039D244 /* YXDatabaseHandle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXDatabaseHandle.m; sourceTree = "<group>"; };
+		CA5F3CB51C896CE60039D244 /* YXDBHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXDBHelper.h; sourceTree = "<group>"; };
+		CA5F3CB61C896CE60039D244 /* YXDBHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXDBHelper.m; sourceTree = "<group>"; };
+		CA5F3CB71C896CE60039D244 /* YXTableColumnInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXTableColumnInfo.h; sourceTree = "<group>"; };
+		CA5F3CB81C896CE60039D244 /* YXTableColumnInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXTableColumnInfo.m; sourceTree = "<group>"; };
+		CA5F3CB91C896CE60039D244 /* YXTableInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXTableInfo.h; sourceTree = "<group>"; };
+		CA5F3CBA1C896CE60039D244 /* YXTableInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXTableInfo.m; sourceTree = "<group>"; };
+		CA5F3CBB1C896CE60039D244 /* YXTypedefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXTypedefine.h; sourceTree = "<group>"; };
+		CA5F3CBD1C896CE60039D244 /* YXFileDirTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXFileDirTool.h; sourceTree = "<group>"; };
+		CA5F3CBE1C896CE60039D244 /* YXFileDirTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXFileDirTool.m; sourceTree = "<group>"; };
+		CA5F3CC01C896CE60039D244 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		CA5F3CC11C896CE60039D244 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		CA5F3CC21C896CE60039D244 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		CA5F3CC31C896CE60039D244 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		CA5F3CC41C896CE60039D244 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
+		CA5F3CC51C896CE60039D244 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
+		CA5F3CC61C896CE60039D244 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+		CA5F3CC71C896CE60039D244 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+		CA5F3CC81C896CE60039D244 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		CA5F3CC91C896CE60039D244 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
+		CA5F3CCB1C896CE60039D244 /* YXLogsModel_table_mappingFile.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = YXLogsModel_table_mappingFile.plist; sourceTree = "<group>"; };
+		CA5F3CCD1C896CE60039D244 /* YXRootModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXRootModel.h; sourceTree = "<group>"; };
+		CA5F3CCE1C896CE60039D244 /* YXRootModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXRootModel.m; sourceTree = "<group>"; };
+		CA5F3CD01C896CE60039D244 /* YXReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = YXReadMe.txt; sourceTree = "<group>"; };
+		CA5F3CEA1C896D1A0039D244 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +131,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA5F3CEB1C896D1A0039D244 /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +155,7 @@
 		CA5F3C501C896C3D0039D244 = {
 			isa = PBXGroup;
 			children = (
+				CA5F3CEA1C896D1A0039D244 /* libsqlite3.tbd */,
 				CA5F3C5B1C896C3E0039D244 /* YXDatabaseHandleSourceCode */,
 				CA5F3C751C896C3E0039D244 /* YXDatabaseHandleSourceCodeTests */,
 				CA5F3C801C896C3E0039D244 /* YXDatabaseHandleSourceCodeUITests */,
@@ -101,11 +176,14 @@
 		CA5F3C5B1C896C3E0039D244 /* YXDatabaseHandleSourceCode */ = {
 			isa = PBXGroup;
 			children = (
-				CA5F3C5F1C896C3E0039D244 /* AppDelegate.h */,
-				CA5F3C601C896C3E0039D244 /* AppDelegate.m */,
-				CA5F3C621C896C3E0039D244 /* ViewController.h */,
-				CA5F3C631C896C3E0039D244 /* ViewController.m */,
-				CA5F3C651C896C3E0039D244 /* Main.storyboard */,
+				CA5F3C971C896CE60039D244 /* model */,
+				CA5F3CA11C896CE60039D244 /* SVProgressHUD */,
+				CA5F3CA51C896CE60039D244 /* YXDBHandle */,
+				CA5F3C8F1C896CCF0039D244 /* AppDelegate.h */,
+				CA5F3C901C896CCF0039D244 /* AppDelegate.m */,
+				CA5F3C911C896CCF0039D244 /* ViewController.h */,
+				CA5F3C921C896CCF0039D244 /* ViewController.m */,
+				CA5F3C931C896CCF0039D244 /* Main.storyboard */,
 				CA5F3C681C896C3E0039D244 /* Assets.xcassets */,
 				CA5F3C6A1C896C3E0039D244 /* LaunchScreen.storyboard */,
 				CA5F3C6D1C896C3E0039D244 /* Info.plist */,
@@ -138,6 +216,145 @@
 				CA5F3C831C896C3E0039D244 /* Info.plist */,
 			);
 			path = YXDatabaseHandleSourceCodeUITests;
+			sourceTree = "<group>";
+		};
+		CA5F3C971C896CE60039D244 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				CA5F3C981C896CE60039D244 /* CompanyModel.h */,
+				CA5F3C991C896CE60039D244 /* CompanyModel.m */,
+				CA5F3C9A1C896CE60039D244 /* EmployeeModel.h */,
+				CA5F3C9B1C896CE60039D244 /* EmployeeModel.m */,
+				CA5F3C9C1C896CE60039D244 /* EmployeeModel_table_mappingFile.plist */,
+				CA5F3C9D1C896CE60039D244 /* root */,
+				CA5F3C9E1C896CE60039D244 /* UserModel.h */,
+				CA5F3C9F1C896CE60039D244 /* UserModel.json */,
+				CA5F3CA01C896CE60039D244 /* UserModel.m */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
+		CA5F3C9D1C896CE60039D244 /* root */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = root;
+			sourceTree = "<group>";
+		};
+		CA5F3CA11C896CE60039D244 /* SVProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				CA5F3CA21C896CE60039D244 /* SVProgressHUD.bundle */,
+				CA5F3CA31C896CE60039D244 /* SVProgressHUD.h */,
+				CA5F3CA41C896CE60039D244 /* SVProgressHUD.m */,
+			);
+			path = SVProgressHUD;
+			sourceTree = "<group>";
+		};
+		CA5F3CA51C896CE60039D244 /* YXDBHandle */ = {
+			isa = PBXGroup;
+			children = (
+				CA5F3CA61C896CE60039D244 /* category */,
+				CA5F3CA91C896CE60039D244 /* dbHandle */,
+				CA5F3CBC1C896CE60039D244 /* FileDirTool */,
+				CA5F3CBF1C896CE60039D244 /* fmdb */,
+				CA5F3CCA1C896CE60039D244 /* mappinFiles */,
+				CA5F3CCC1C896CE60039D244 /* rootModel */,
+				CA5F3CCF1C896CE60039D244 /* test */,
+				CA5F3CD01C896CE60039D244 /* YXReadMe.txt */,
+			);
+			path = YXDBHandle;
+			sourceTree = "<group>";
+		};
+		CA5F3CA61C896CE60039D244 /* category */ = {
+			isa = PBXGroup;
+			children = (
+				CA5F3CA71C896CE60039D244 /* NSString+YXStringEX.h */,
+				CA5F3CA81C896CE60039D244 /* NSString+YXStringEX.m */,
+			);
+			path = category;
+			sourceTree = "<group>";
+		};
+		CA5F3CA91C896CE60039D244 /* dbHandle */ = {
+			isa = PBXGroup;
+			children = (
+				CA5F3CAA1C896CE60039D244 /* handleCategory */,
+				CA5F3CB31C896CE60039D244 /* YXDatabaseHandle.h */,
+				CA5F3CB41C896CE60039D244 /* YXDatabaseHandle.m */,
+				CA5F3CB51C896CE60039D244 /* YXDBHelper.h */,
+				CA5F3CB61C896CE60039D244 /* YXDBHelper.m */,
+				CA5F3CB71C896CE60039D244 /* YXTableColumnInfo.h */,
+				CA5F3CB81C896CE60039D244 /* YXTableColumnInfo.m */,
+				CA5F3CB91C896CE60039D244 /* YXTableInfo.h */,
+				CA5F3CBA1C896CE60039D244 /* YXTableInfo.m */,
+				CA5F3CBB1C896CE60039D244 /* YXTypedefine.h */,
+			);
+			path = dbHandle;
+			sourceTree = "<group>";
+		};
+		CA5F3CAA1C896CE60039D244 /* handleCategory */ = {
+			isa = PBXGroup;
+			children = (
+				CA5F3CAB1C896CE60039D244 /* YXDatabaseHandle+Delete.h */,
+				CA5F3CAC1C896CE60039D244 /* YXDatabaseHandle+Delete.m */,
+				CA5F3CAD1C896CE60039D244 /* YXDatabaseHandle+Insert.h */,
+				CA5F3CAE1C896CE60039D244 /* YXDatabaseHandle+Insert.m */,
+				CA5F3CAF1C896CE60039D244 /* YXDatabaseHandle+Select.h */,
+				CA5F3CB01C896CE60039D244 /* YXDatabaseHandle+Select.m */,
+				CA5F3CB11C896CE60039D244 /* YXDatabaseHandle+Update.h */,
+				CA5F3CB21C896CE60039D244 /* YXDatabaseHandle+Update.m */,
+			);
+			path = handleCategory;
+			sourceTree = "<group>";
+		};
+		CA5F3CBC1C896CE60039D244 /* FileDirTool */ = {
+			isa = PBXGroup;
+			children = (
+				CA5F3CBD1C896CE60039D244 /* YXFileDirTool.h */,
+				CA5F3CBE1C896CE60039D244 /* YXFileDirTool.m */,
+			);
+			path = FileDirTool;
+			sourceTree = "<group>";
+		};
+		CA5F3CBF1C896CE60039D244 /* fmdb */ = {
+			isa = PBXGroup;
+			children = (
+				CA5F3CC01C896CE60039D244 /* FMDatabase.h */,
+				CA5F3CC11C896CE60039D244 /* FMDatabase.m */,
+				CA5F3CC21C896CE60039D244 /* FMDatabaseAdditions.h */,
+				CA5F3CC31C896CE60039D244 /* FMDatabaseAdditions.m */,
+				CA5F3CC41C896CE60039D244 /* FMDatabasePool.h */,
+				CA5F3CC51C896CE60039D244 /* FMDatabasePool.m */,
+				CA5F3CC61C896CE60039D244 /* FMDatabaseQueue.h */,
+				CA5F3CC71C896CE60039D244 /* FMDatabaseQueue.m */,
+				CA5F3CC81C896CE60039D244 /* FMResultSet.h */,
+				CA5F3CC91C896CE60039D244 /* FMResultSet.m */,
+			);
+			path = fmdb;
+			sourceTree = "<group>";
+		};
+		CA5F3CCA1C896CE60039D244 /* mappinFiles */ = {
+			isa = PBXGroup;
+			children = (
+				CA5F3CCB1C896CE60039D244 /* YXLogsModel_table_mappingFile.plist */,
+			);
+			path = mappinFiles;
+			sourceTree = "<group>";
+		};
+		CA5F3CCC1C896CE60039D244 /* rootModel */ = {
+			isa = PBXGroup;
+			children = (
+				CA5F3CCD1C896CE60039D244 /* YXRootModel.h */,
+				CA5F3CCE1C896CE60039D244 /* YXRootModel.m */,
+			);
+			path = rootModel;
+			sourceTree = "<group>";
+		};
+		CA5F3CCF1C896CE60039D244 /* test */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = test;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -243,9 +460,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA5F3C961C896CCF0039D244 /* Main.storyboard in Resources */,
+				CA5F3CE91C896CE60039D244 /* YXReadMe.txt in Resources */,
+				CA5F3CD61C896CE60039D244 /* SVProgressHUD.bundle in Resources */,
 				CA5F3C6C1C896C3E0039D244 /* LaunchScreen.storyboard in Resources */,
+				CA5F3CE71C896CE60039D244 /* YXLogsModel_table_mappingFile.plist in Resources */,
+				CA5F3CD31C896CE60039D244 /* EmployeeModel_table_mappingFile.plist in Resources */,
+				CA5F3CD41C896CE60039D244 /* UserModel.json in Resources */,
 				CA5F3C691C896C3E0039D244 /* Assets.xcassets in Resources */,
-				CA5F3C671C896C3E0039D244 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,8 +492,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA5F3C641C896C3E0039D244 /* ViewController.m in Sources */,
-				CA5F3C611C896C3E0039D244 /* AppDelegate.m in Sources */,
+				CA5F3CDA1C896CE60039D244 /* YXDatabaseHandle+Insert.m in Sources */,
+				CA5F3CD81C896CE60039D244 /* NSString+YXStringEX.m in Sources */,
+				CA5F3CDB1C896CE60039D244 /* YXDatabaseHandle+Select.m in Sources */,
+				CA5F3CE21C896CE60039D244 /* FMDatabase.m in Sources */,
+				CA5F3CD91C896CE60039D244 /* YXDatabaseHandle+Delete.m in Sources */,
+				CA5F3CD21C896CE60039D244 /* EmployeeModel.m in Sources */,
+				CA5F3C951C896CCF0039D244 /* ViewController.m in Sources */,
+				CA5F3CDF1C896CE60039D244 /* YXTableColumnInfo.m in Sources */,
+				CA5F3CE61C896CE60039D244 /* FMResultSet.m in Sources */,
+				CA5F3CD51C896CE60039D244 /* UserModel.m in Sources */,
+				CA5F3CDD1C896CE60039D244 /* YXDatabaseHandle.m in Sources */,
+				CA5F3CE81C896CE60039D244 /* YXRootModel.m in Sources */,
+				CA5F3CD71C896CE60039D244 /* SVProgressHUD.m in Sources */,
+				CA5F3CDC1C896CE60039D244 /* YXDatabaseHandle+Update.m in Sources */,
+				CA5F3CDE1C896CE60039D244 /* YXDBHelper.m in Sources */,
+				CA5F3CE11C896CE60039D244 /* YXFileDirTool.m in Sources */,
+				CA5F3CD11C896CE60039D244 /* CompanyModel.m in Sources */,
+				CA5F3CE31C896CE60039D244 /* FMDatabaseAdditions.m in Sources */,
+				CA5F3CE01C896CE60039D244 /* YXTableInfo.m in Sources */,
+				CA5F3CE51C896CE60039D244 /* FMDatabaseQueue.m in Sources */,
+				CA5F3CE41C896CE60039D244 /* FMDatabasePool.m in Sources */,
+				CA5F3C941C896CCF0039D244 /* AppDelegate.m in Sources */,
 				CA5F3C5E1C896C3E0039D244 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -308,14 +550,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		CA5F3C651C896C3E0039D244 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CA5F3C661C896C3E0039D244 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		CA5F3C6A1C896C3E0039D244 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -344,7 +578,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Chen Chen (B7J4HWHK42)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Chen Chen (B7J4HWHK42)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -363,9 +598,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "63a78985-419c-4264-a81f-c66a32b461b7";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -387,7 +623,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Chen Chen (B7J4HWHK42)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Chen Chen (B7J4HWHK42)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -400,8 +637,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "63a78985-419c-4264-a81f-c66a32b461b7";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

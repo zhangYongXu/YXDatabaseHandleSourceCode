@@ -1,13 +1,13 @@
 //
 //  AppDelegate.m
-//  YXDatabaseHandleSourceCode
+//  YXDatabaseHandlle
 //
-//  Created by 拓之林 on 16/3/4.
+//  Created by 拓之林 on 16/3/2.
 //  Copyright © 2016年 拓之林. All rights reserved.
 //
 
 #import "AppDelegate.h"
-
+#import "YXFileDirTool.h"
 @interface AppDelegate ()
 
 @end
@@ -17,9 +17,22 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [self configDatabaseHandle];
     return YES;
 }
-
+/**
+ *  初始化数据库操作
+ */
+- (void)configDatabaseHandle{
+    _dbHandle = [YXDatabaseHandle shareInstance];
+    [YXDatabaseHandle setYXDatabaseHandleIsShowLogs:YES];
+    NSString * path =[YXFileDirTool getFilePathInHomeDocumentsWithFileName:@"db.sqlite"];
+    NSError * error = nil;
+    BOOL isSuccess = [_dbHandle openDatabaseWithPath:path Error:&error];
+    [_dbHandle registerClass:[UserModel class] MappingTypeType:TableFeildMappingTypeClassProperty];
+    [_dbHandle registerClass:[CompanyModel class] MappingTypeType:TableFeildMappingTypeClassProperty];
+    [_dbHandle registerClass:[EmployeeModel class] MappingTypeType:TableFeildMappingTypeMappingFile];
+}
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.

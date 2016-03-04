@@ -1,0 +1,299 @@
+//
+//  SMDDateBaseTableCopy.m
+//  Echo
+//
+//  Created by robu on 15/1/8.
+//  Copyright (c) 2015年 Static Ga. All rights reserved.
+//
+
+#import "YXDatabaseHelper.h"
+#import <sqlite3.h>
+#import <stdio.h>
+#import "SqliteUtils.h"
+#import <objc/runtime.h>
+
+#define source_database_name @"location_Numbercity.sqlite"
+
+
+@implementation YXDatabaseHelper
+/*
+#pragma mark app升级覆盖安装 拷贝联系人数据库数据 到 新数据库
+-(void)copyContactsDBdataForUpdate{
+    NSString * sourceDbPath = [APP_DELEGATE.primaryHomePath stringByAppendingPathComponent:@"contacts.sqlite"];
+    NSString * desDbPath = [APP_DELEGATE.primaryHomePath stringByAppendingPathComponent:@"common_db.sqlite"];
+    NSLog(@"sourceDbPath = %@",sourceDbPath);
+    NSLog(@"desDbPath = %@",desDbPath);
+    
+    NSMutableArray * tableInfoArray = [[NSMutableArray alloc] init];
+    DbTableInfo * table_id_list = [DbTableInfo modelWithMappingFileName:table_mapping_file_name_id_list];
+    DbTableInfo * table_data = [DbTableInfo modelWithMappingFileName:table_mapping_file_name_data];
+    DbTableInfo * table_c_groups = [DbTableInfo modelWithMappingFileName:table_mapping_file_name_c_groups];
+
+    if(![self dataCountInTable:table_id_list DataBasePath:desDbPath]>0){
+        [tableInfoArray addObject:table_id_list];
+    }else{
+        NSLog(@"联系人主表数据表=%@,已经拷贝过",table_id_list.tableName);
+    }
+    if(![self dataCountInTable:table_data DataBasePath:desDbPath]>0){
+        [tableInfoArray addObject:table_data];
+    }else {
+        NSLog(@"联系人号码数据表=%@,已经拷贝过",table_data.tableName);
+    }
+    if(![self dataCountInTable:table_c_groups DataBasePath:desDbPath]>0){
+        [tableInfoArray addObject:table_c_groups];
+    }else {
+        NSLog(@"联系人分组数据表=%@,已经拷贝过",table_c_groups.tableName);
+    }
+    
+    [self copyDbTables:tableInfoArray DesDataBasePath:desDbPath SourceDataBasePath:sourceDbPath];
+}
+ */
+#pragma mark 获取某个表的记录条数
+-(NSInteger)dataCountInTable:(DbTableInfo*)tableInfo DataBasePath:(NSString*)dataBasePath{
+    sqlite3* db = [self openDataBaseWithPath:dataBasePath];
+    NSString* sql = [[NSString alloc] initWithFormat:@"select count(*) from %@",tableInfo.tableName];
+    NSLog(@"dataCountInTable sql = %@",sql);
+    sqlite3_stmt* statement = nil;
+    int count = 0;
+    if(sqlite3_prepare_v2(db, [sql UTF8String], -1, &statement, nil) == SQLITE_OK){
+        if (sqlite3_step(statement) == SQLITE_ROW) {
+            count = sqlite3_column_int(statement, 0);
+        }
+        if (statement) {
+            sqlite3_finalize(statement);
+        }
+    }
+    [self closeDataBase:db];
+    return count;
+}
+#pragma mark 打开和关闭数据库
+- (sqlite3*) openDataBaseWithPath:(NSString*)dataBasepath
+{
+    sqlite3* db = nil;
+    if(dataBasepath){
+        if(sqlite3_open([dataBasepath UTF8String], &db) == SQLITE_OK)
+        {
+            return db;
+        }else{
+            NSLog(@"打开数据库失败");
+        }
+    }else{
+        NSLog(@"  数据库路径错误 ");
+    }
+    return  db;
+}
+- (BOOL)closeDataBase:(sqlite3*)db{
+    if(sqlite3_close(db) == SQLITE_OK){
+        return YES;
+    }else{
+        return NO;
+    }
+}
+/**
+ *  从一个数据库中拷贝表及其数据到另一个数据库（目标表与源表所拷贝的字段要相同）
+ *
+ *  @param tablesArray        表信息模型数组
+ *  @param desDataBasePath    目标数据库路径
+ *  @param sourceDataBasePath 源数据库路径
+ */
+-(void)copyDbTables:(NSArray*)tablesArray DesDataBasePath:(NSString*)desDataBasePath SourceDataBasePath:(NSString*) sourceDataBasePath{
+    const char * des_db_path = [desDataBasePath cStringUsingEncoding:NSASCIIStringEncoding];
+    sqlite3 *db_des = NULL;
+    if(sqlite3_open(des_db_path,&db_des)== SQLITE_OK){
+        for(DbTableInfo * tableInfo in tablesArray){
+            if(![SqliteUtils isTableExist:db_des TableName:tableInfo.tableName]){
+                [self createTable:db_des CreateTableSql:[tableInfo sqlCreateTable]];
+            }
+        }
+        char * errorMsg = NULL;
+        NSString * nsSql = [NSString stringWithFormat:@"attach '%@' as attach_db",sourceDataBasePath];
+        const char * cSql = [nsSql cStringUsingEncoding:NSASCIIStringEncoding];
+        if(sqlite3_exec(db_des,cSql,0,0,&errorMsg) == SQLITE_OK){
+            for(DbTableInfo * tableInfo in tablesArray){
+                NSString * columnsSql = @"";
+                for(TableColumnInfo * columnInfo in tableInfo.columnInfoArray){
+                    if(columnInfo.isNewAddColumn){
+                        continue;
+                    }
+                    columnsSql = [columnsSql stringByAppendingFormat:@" %@, ",columnInfo.columnName];
+                }
+                columnsSql =  [columnsSql substringToIndex:columnsSql.length-2];
+                NSString * copySql = [NSString stringWithFormat:@"insert into %@ (%@) select %@ from attach_db.%@",tableInfo.tableName,columnsSql,columnsSql,tableInfo.tableName];
+                NSLog(@"表数据拷贝sql：%@",copySql);
+                char * errorMsg1 = NULL;
+                if(sqlite3_exec(db_des,"begin transaction",0,0,&errorMsg1) == SQLITE_OK){
+                    char * errorMsg3 = NULL;
+                    const char * cCopySql = [copySql cStringUsingEncoding:NSASCIIStringEncoding];
+                    if(sqlite3_exec(db_des,cCopySql,0,0,&errorMsg3) == SQLITE_OK){
+                        NSLog(@"拷贝表数据成功");
+                    }else{
+                        if(NULL != errorMsg3){
+                            printf("拷贝表数据失败。。errorMsg3=%s",errorMsg3);
+                        }
+                    }
+                    char * errorMsg2 = NULL;
+                    if(sqlite3_exec(db_des,"commit transaction",0,0,&errorMsg2) == SQLITE_OK){
+                        
+                    }else{
+                        if(NULL != errorMsg2){
+                            printf("提交事务失败。。errorMsg2=%s",errorMsg1);
+                        }
+                    }
+                }else{
+                    if(NULL != errorMsg1){
+                        printf("开启事务失败。。errorMsg1=%s",errorMsg1);
+                    }
+                }
+            }
+        }else{
+            if(NULL != errorMsg){
+                printf("attach ... faild errorMsg = %s",errorMsg);
+            }
+        }
+    }else{
+        NSLog(@"打开目标数据库失败");
+    }
+}
+
+- (void)createTable:(sqlite3*) db CreateTableSql:(NSString*)createTableSql
+{
+    if(![SqliteUtils executeSql:db Sql:createTableSql]){
+        NSLog(@"  create table failed ...... sql=%@ ",createTableSql);
+    }
+}
+@end
+@implementation DbTableInfo
++(DbTableInfo *)modelWithMappingFileName:(NSString *)mappingFileName{
+    DbTableInfo * model = [[DbTableInfo alloc] init];
+    NSString * path = [[NSBundle mainBundle] pathForResource:mappingFileName ofType:nil];
+    NSDictionary * dict = [NSDictionary dictionaryWithContentsOfFile:path];
+    if(nil == dict){
+        return nil;
+    }
+    [model setPartAttributes:dict];
+    model.columnInfoArray = [TableColumnInfo modelArrayWith:[dict objectForKey:@"columnInfoArray"]];
+    return model;
+}
++(DbTableInfo *)modelWithClass:(Class)class{
+    NSString * className = NSStringFromClass(class);
+    DbTableInfo * tableInfo  = [[DbTableInfo alloc] init];
+    tableInfo.tableName = className;
+    tableInfo.primaryKey = @"serial";
+    tableInfo.primaryPropertyName = @"serial";
+    tableInfo.primaryPropertyType = @"NSString";
+
+    NSMutableArray *columnInfoArray = [NSMutableArray array];
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList(class, &outCount);
+    for (i = 0; i<outCount; i++)
+    {
+        const char* char_f =property_getName(properties[i]);
+        NSString *propertyName = [NSString stringWithUTF8String:char_f];
+        if([propertyName isEqualToString:@"serial"]){
+            continue;
+        }
+        const char * attributes = property_getAttributes(properties[i]);//获取属性类型
+        NSString * typeName=[NSString stringWithUTF8String:attributes];
+        NSRange rangeString=[typeName rangeOfString:@"NSString"];
+        
+        TableColumnInfo * columnInfo = [[TableColumnInfo alloc] init];
+        columnInfo.columnName = propertyName;
+        columnInfo.propertyName = propertyName;
+        if(rangeString.location!=NSNotFound){
+            columnInfo.columnType = @"text";
+            columnInfo.propertyType = @"NSString";
+            columnInfo.defaultValue = @"";
+        }else{
+            columnInfo.columnType = @"integer";
+            columnInfo.propertyType = @"NSNumber";
+            columnInfo.defaultValue = @"0";
+        }
+        [columnInfoArray addObject:columnInfo];
+    }
+    free(properties);
+    tableInfo.columnInfoArray = columnInfoArray;
+    return tableInfo;
+}
+#pragma mark 获取某个类的属性
++ (NSArray *)propertysWithClass:(Class) class
+{
+    NSMutableArray *props = [NSMutableArray array];
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList(class, &outCount);
+    for (i = 0; i<outCount; i++)
+    {
+        const char* char_f =property_getName(properties[i]);
+        NSString *propertyName = [NSString stringWithUTF8String:char_f];
+        const char * attributes = property_getAttributes(properties[i]);//获取属性类型
+        NSString * typeName=[NSString stringWithUTF8String:attributes];
+        NSRange rangeString=[typeName rangeOfString:@"NSString"];
+        NSRange rangeNumber=[typeName rangeOfString:@"NSNumber"];
+        if(rangeString.location!=NSNotFound||rangeNumber.location!=NSNotFound){
+            [props addObject:propertyName];
+        }
+    }
+    free(properties);
+    return props;
+}
+#pragma mark 根据列名 查找列信息
+-(TableColumnInfo *)columnInfoWithColumnName:(NSString *)columnName{
+    for(TableColumnInfo * columnInfo in self.columnInfoArray){
+        if([columnName isEqualToString:columnInfo.columnName]){
+            return columnInfo;
+        }
+    }
+    return nil;
+}
+#pragma mark 创建建表语句
+-(NSString *)sqlCreateTable{
+    NSString * sql = @"";
+    if(nil != self.primaryKey && self.primaryKey.length>0){
+        sql = [NSString stringWithFormat:@"%@ integer primary key autoincrement, ",self.primaryKey];
+    }
+    sql = [NSString stringWithFormat:@"create table if not exists %@ (%@ ",self.tableName,sql];
+    for(TableColumnInfo * columnInfo in self.columnInfoArray){
+        NSString *tdefaultValue = @"";
+        if(nil != columnInfo.defaultValue){
+            if(![columnInfo.defaultValue isEqualToString:@"NULL"]){
+                tdefaultValue = [NSString stringWithFormat:@" default '%@'",columnInfo.defaultValue];
+            }
+        }
+        NSString * unique = @"";
+        if(columnInfo.isUnique){
+            unique = @"unique";
+        }
+        NSString * tSql = [NSString stringWithFormat:@" %@ %@ %@ %@, ",columnInfo.columnName,columnInfo.columnType,unique,tdefaultValue];
+        sql = [sql stringByAppendingString:tSql];
+    }
+    sql = [sql substringToIndex:sql.length - 2];
+    sql = [sql stringByAppendingString:@" )"];
+    NSLog(@"sqlCreateTable sql =%@",sql);
+    return sql;
+}
+-(NSMutableArray *)getColumnNameArray{
+    NSMutableArray * array = [[NSMutableArray init] init];
+    for (TableColumnInfo * columnInfo in self.columnInfoArray) {
+        [array addObject:columnInfo.columnName];
+    }
+    return array;
+}
+@end
+@implementation TableColumnInfo
+
+-(instancetype)init{
+    if(self = [super init]){
+        self.isUnique = NO;
+        self.isNewAddColumn = NO;
+    }
+    return self;
+}
++(NSArray *)modelArrayWith:(NSArray *)dictArray{
+    NSMutableArray * array = [[NSMutableArray alloc] init];
+    for(NSDictionary * dict in dictArray){
+        TableColumnInfo * model = [[TableColumnInfo alloc] init];
+        [model setPartAttributes:dict];
+        [array addObject:model];
+    }
+    return array;
+}
+@end

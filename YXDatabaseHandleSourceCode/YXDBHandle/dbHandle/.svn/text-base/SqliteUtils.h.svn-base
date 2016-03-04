@@ -1,0 +1,41 @@
+//
+//  SqliteUtils.h
+//  Echo
+//
+//  Created by Shuai Tao on 14-3-11.
+//  Copyright (c) 2014年 Static Ga. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <sqlite3.h>
+
+@interface SqliteUtils : NSObject
+
+
+// query the input table name is exist into db
+/**
+ *  @author zhangyongxu, 15-03-11 10:03:50
+ *
+ *  查询对应的数据库中是否存在对应的数据库表
+ *
+ *  @param db        数据库
+ *  @param tableName 数据表
+ *
+ *  @return 是否存在
+ */
++ (BOOL) isTableExist:(sqlite3*)db TableName:(NSString*)tableName;
+
+// execute sql statement but query statement.
+/**
+ *  @author zhangyongxu, 15-03-11 10:03:54
+ *
+ *  执行对应数据库语句
+ *
+ *  @param db  数据库
+ *  @param sql 查询语句
+ *
+ *  @return 是否查询成功
+ */
++ (BOOL) executeSql:(sqlite3*)db Sql:(NSString*)sql;
+
+@end

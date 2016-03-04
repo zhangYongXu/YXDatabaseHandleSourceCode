@@ -1,0 +1,75 @@
+//
+//  SMDDateBaseTableCopy.h
+//  Echo
+//
+//  Created by robu on 15/1/8.
+//  Copyright (c) 2015年 Static Ga. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "RootModel.h"
+#define columnTypeText @"text"
+#define columnTypeInteger @"integer"
+/*
+ 表结构与实体字段属性映射文件
+ */
+#define table_mapping_file_name_city_zone @"city_zone_mapping.plist"
+#define table_mapping_file_name_location_number @"location_number_mapping.plist"
+#define table_mapping_file_name_carrieroperator @"carrieroperator_mapping.plist"
+#define table_mapping_file_name_numberOperator @"numberOperator_mapping.plist"
+//联系人
+#define table_mapping_file_name_c_groups @"ECContactGroupItem_c_groups_mapping.plist"
+#define table_mapping_file_name_id_list @"GGContactPerson_id_list_mapping.plist"
+#define table_mapping_file_name_data @"GGPhone_data_mapping.plist"
+//通话记录
+#define table_mapping_file_name_logs @"SMDRecordsModel_logs_mapping.plist"
+//短信
+#define table_mapping_file_name_sms_clist @"ECSmsContact_sms_clist_mapping.plist"
+#define table_mapping_file_name_sms_data @"ECSmsInfo_sms_data_mapping.plist"
+
+
+@interface YXDatabaseHelper : NSObject
+/**
+ *  从一个数据库中拷贝表及其数据到另一个数据库（目标表与源表所拷贝的字段要相同）
+ *
+ *  @param tablesArray        表信息模型数组
+ *  @param desDataBasePath    目标数据库路径
+ *  @param sourceDataBasePath 源数据库路径
+ */
+-(void)copyDbTables:(NSArray*)tablesArray DesDataBasePath:(NSString*)desDataBasePath SourceDataBasePath:(NSString*) sourceDataBasePath;
+-(void)copyBelongPlaceTable;
+/**
+ *  从1.0升级到2.0 覆盖升级安装时需要 处理数据库 数据
+ */
+- (void)copyDBdataForUpdate;
+@end
+@class TableColumnInfo;
+@interface DbTableInfo : RootModel
+@property (copy,nonatomic) NSString * tableName;//表名
+@property (strong,nonatomic) NSArray * columnInfoArray;//列信息
+@property (copy,nonatomic) NSString * primaryKey;//表主键
+//主键对应模型属性的名称和类型
+@property (copy,nonatomic) NSString * primaryPropertyName;
+@property (copy,nonatomic) NSString * primaryPropertyType;
+
+-(NSString*)sqlCreateTable;
++(DbTableInfo*)modelWithMappingFileName:(NSString *) mappingFileName;
++(DbTableInfo *)modelWithClass:(Class)class;
+-(NSMutableArray*)getColumnNameArray;
+-(TableColumnInfo*)columnInfoWithColumnName:(NSString*)columnName;
+@end
+@interface TableColumnInfo : RootModel
+//列名和列类型
+@property (copy,nonatomic) NSString * columnName;
+@property (copy,nonatomic) NSString * columnType;
+//属性名和属性类型及是否是唯一的
+@property (copy,nonatomic) NSString * propertyName;
+@property (copy,nonatomic) NSString * propertyType;
+@property (assign,nonatomic)BOOL isUnique;
+//列缺省值和列描述
+@property (copy,nonatomic) NSString * defaultValue;
+@property (copy,nonatomic) NSString * columnDescription;
+//相对于上一个版本是否是新增的字段
+@property (assign,nonatomic) BOOL isNewAddColumn;
++(NSArray *)modelArrayWith:(NSArray*)dictArray;
+@end
