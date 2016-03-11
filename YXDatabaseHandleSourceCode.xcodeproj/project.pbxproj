@@ -228,8 +228,8 @@
 				CA5F3C9C1C896CE60039D244 /* EmployeeModel_table_mappingFile.plist */,
 				CA5F3C9D1C896CE60039D244 /* root */,
 				CA5F3C9E1C896CE60039D244 /* UserModel.h */,
-				CA5F3C9F1C896CE60039D244 /* UserModel.json */,
 				CA5F3CA01C896CE60039D244 /* UserModel.m */,
+				CA5F3C9F1C896CE60039D244 /* UserModel.json */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -601,7 +601,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "63a78985-419c-4264-a81f-c66a32b461b7";
+				PROVISIONING_PROFILE = "0518856c-d5ba-48e2-9ea2-e744ad81d6ab";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -639,7 +639,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "63a78985-419c-4264-a81f-c66a32b461b7";
+				PROVISIONING_PROFILE = "0518856c-d5ba-48e2-9ea2-e744ad81d6ab";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -734,6 +734,7 @@
 				CA5F3C881C896C3E0039D244 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CA5F3C891C896C3E0039D244 /* Build configuration list for PBXNativeTarget "YXDatabaseHandleSourceCodeTests" */ = {
 			isa = XCConfigurationList;
@@ -742,6 +743,7 @@
 				CA5F3C8B1C896C3E0039D244 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CA5F3C8C1C896C3E0039D244 /* Build configuration list for PBXNativeTarget "YXDatabaseHandleSourceCodeUITests" */ = {
 			isa = XCConfigurationList;
@@ -750,6 +752,7 @@
 				CA5F3C8E1C896C3E0039D244 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

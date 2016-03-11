@@ -21,7 +21,7 @@
 
 -(instancetype)initWithDictionary:(NSDictionary*)dictionary{
     if(self = [self init]){
-        [self setPartAttributes:[self canKVCDicttionary:dictionary]];
+        [self setPartAttributes:dictionary];
     }
     return self;
 }
@@ -42,23 +42,7 @@
     }
     return array;
 }
-#pragma mark 把数据字典转换成可以进行键值编码的数据字典
--(NSDictionary*)canKVCDicttionary:(NSDictionary*)dictionary{
-    NSDictionary * mappingDict = [self propertyKeyMappingDictionary];
-    if(nil == mappingDict || 0 == mappingDict.count){
-        return dictionary;
-    }
-    NSMutableDictionary * kvcDict = [[NSMutableDictionary alloc] init];
-    for(NSString * key in dictionary.allKeys){
-        id value = [dictionary objectForKey:key];
-        NSString * kvcKey = [mappingDict objectForKey:key];
-        if(nil == kvcKey){
-            kvcKey = key;
-        }
-        [kvcDict setObject:value forKey:kvcKey];
-    }
-    return kvcDict;
-}
+
 /*
  return @{
  @"数据字典key1"   : @"模型属性key1",
